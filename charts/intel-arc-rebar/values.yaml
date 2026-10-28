@@ -1,0 +1,43 @@
+image:
+  repository: ghcr.io/YOUR_GITHUB_USERNAME/intel-arc-rebar
+  pullPolicy: IfNotPresent
+  tag: "" # Defaults to Chart appVersion
+
+# Target BAR size: "2GB", "4GB", "8GB" (Arc A380), "16GB" (Arc A770 / B580), or "32GB"
+gpuMemorySize: "16GB"
+
+# Optional: Explicitly target a PCI BDF (e.g. "0000:03:00.0") if multiple discrete GPUs exist
+targetPciBdf: ""
+
+# Test mode: logs detected GPU and Root Port without modifying registers
+dryRun: false
+
+# Keep container sleeping after resize (required for DaemonSet)
+sleepAfter: true
+
+# Node selector to target specific Intel Arc nodes (e.g. NFD labels or hostname)
+nodeSelector: {}
+  # kubernetes.io/hostname: talos-gpu-worker-01
+  # feature.node.kubernetes.io/pci-0300_8086.present: "true"
+
+# Tolerations so the DaemonSet runs on tainted GPU or control-plane nodes
+tolerations:
+  - operator: Exists
+
+affinity: {}
+
+# Ensure this runs before standard workloads
+priorityClassName: "system-node-critical"
+
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 100%
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 16Mi
+  limits:
+    cpu: 100m
+    memory: 64Mi
