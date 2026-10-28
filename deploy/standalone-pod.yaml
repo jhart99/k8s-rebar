@@ -14,7 +14,7 @@ spec:
     # intel.feature.node.kubernetes.io/gpu: "true"
   containers:
     - name: arc-rebar
-      image: ghcr.io/YOUR_GITHUB_USERNAME/intel-arc-rebar:latest
+      image: ghcr.io/jhart99/intel-arc-rebar:latest
       securityContext:
         privileged: true
       env:
