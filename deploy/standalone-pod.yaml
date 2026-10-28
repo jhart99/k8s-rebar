@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: intel-arc-rebar
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: intel-arc-rebar
+spec:
+  hostPID: true
+  priorityClassName: system-node-critical
+  restartPolicy: Always
+  nodeSelector:
+    kubernetes.io/os: linux
+    # intel.feature.node.kubernetes.io/gpu: "true"
+  containers:
+    - name: arc-rebar
+      image: ghcr.io/YOUR_GITHUB_USERNAME/intel-arc-rebar:latest
+      securityContext:
+        privileged: true
+      env:
+        - name: GPU_MEMORY_SIZE
+          value: "16GB"
+        - name: DRY_RUN
+          value: "false"
+      volumeMounts:
+        - name: host-sys
+          mountPath: /host-sys
+        - name: host-run
+          mountPath: /host-run
+  volumes:
+    - name: host-sys
+      hostPath:
+        path: /sys
+        type: Directory
+    - name: host-run
+      hostPath:
+        path: /run
+        type: Directory
